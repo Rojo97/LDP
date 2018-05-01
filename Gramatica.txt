@@ -1,0 +1,45 @@
+S -> Tipo id ( Args ) { A }
+Tipo -> int 
+        | boolean
+        | byte
+        | float
+        | char
+        | double
+        | long
+        | short
+       # | signed
+       # | unsigned
+        | void
+Args -> Arg 
+        | Arg , Args 
+        | ε
+A -> Exp A 
+    | ε
+Arg -> Tipo id
+Exp -> if ( C ) { A } 
+        | if ( C ) { A } else { A } 
+        | while ( C ) { A }
+        | do { A } while ( C ) ;
+        | for ( Asig ; C ; Op ) { A }
+        | switch ( Exp ) { Cases default : A }
+        | Asig ;
+        | Op ;
+        | S ;
+        | Return ;
+        | break ;
+Return -> | return ( S )
+          | return Id 
+C -> ( C )
+    | C Comp C 
+    | id
+    | 0
+    | 1
+    | boolean
+Asig -> Tipo id = Exp
+Op -> id Operador Op
+    | id Operador id
+    | id ++
+    | id --
+Cases -> case id: A Cases
+
+
