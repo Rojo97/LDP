@@ -1,45 +1,102 @@
 S -> Tipo id ( Args ) { A }
-Tipo -> int 
-        | boolean
-        | byte
-        | float
-        | char
-        | double
-        | long
-        | short
-       # | signed
-       # | unsigned
+
+Tipo -> TipoSimple
+        | TipoComp
         | void
+
+TipoSimple ->   int 
+            | boolean
+            | byte
+            | float
+            | char
+            | double
+            | long
+            | short
+
+TipoComp -> signed TipoSimple
+         | unsigned TipoSimple
+
 Args -> Arg 
-        | Arg , Args 
-        | ε
-A -> Exp A 
+        | Arg Args
+
+A -> Exp A
+    | Flujo A
     | ε
+
 Arg -> Tipo id
-Exp -> if ( C ) { A } 
-        | if ( C ) { A } else { A } 
-        | while ( C ) { A }
-        | do { A } while ( C ) ;
-        | for ( Asig ; C ; Op ) { A }
-        | switch ( Exp ) { Cases default : A }
-        | Asig ;
-        | Op ;
-        | S ;
+        | Tipo id ,
+        | id ,
+        | id
+        | ε
+
+Exp -> Asig ;
+        | Func ;
         | Return ;
         | break ;
-Return -> | return ( S )
-          | return Id 
+
+Asig -> Tipo id = Func ;
+        | Tipo Ids ;
+
+Func -> ID ( Args ) ;
+        | Op
+
+Op ->  ( Op )
+     | Op + Op
+     | Op - Op
+     | Op * Op
+     | Op / Op
+     | Op % Op
+     | id
+     | num
+
+Flujo -> If
+        | If Else 
+        | While
+        | do { A } while ( C ) ;
+        | For
+        | Switch
+
+If -> if ( C ) { A }
+    | if ( C ) Exp
+
+Else -> else { A }
+        | else Exp
+
+While -> while ( C ) { A }
+        | while ( C ) Exp
+
+For -> for ( Asig ; C ; Func ) { A }
+        | for ( Asig ; C ; Func ) Exp
+
+Switch -> switch ( Func ) { Cases default : A }
+        | switch ( Func ) { Cases }
+
+Return -> | return ( Func )
+          | return Id
+
 C -> ( C )
-    | C Comp C 
+    | C Comp C
     | id
-    | 0
-    | 1
-    | boolean
-Asig -> Tipo id = Exp
-Op -> id Operador Op
-    | id Operador id
-    | id ++
-    | id --
+    | num
+    | Boolean
+
+Comp -> = =
+        | ! =
+        | >
+        | <
+        | > =
+        | < =
+        | < >
+        | & &
+        | | |
+
+Boolean -> True
+            | False
+
+Ids -> id
+    | id , Ids
+    | ε 
+
 Cases -> case id: A Cases
 
 
