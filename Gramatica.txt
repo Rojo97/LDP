@@ -4,7 +4,7 @@ Tipo -> TipoSimple
         | TipoComp
         | void
 
-TipoSimple ->   int 
+TipoSimple ->   int
             | boolean
             | byte
             | float
@@ -16,7 +16,7 @@ TipoSimple ->   int
 TipoComp -> signed TipoSimple
          | unsigned TipoSimple
 
-Args -> Arg 
+Args -> Arg
         | Arg Args
 
 A -> Exp A      A.NP = Exp.NP * A"dentro".NP
@@ -40,21 +40,23 @@ Asig -> Tipo id = Func ;        Asig.NP = 1
 Func -> ID ( Args ) ;           Func.NP = 1
         | Op                    Func.NP = 1
 
-Op ->  ( Op )
-     | Op + Op
-     | Op - Op
-     | Op * Op
-     | Op / Op
-     | Op % Op
-     | id
-     | num
+Op ->  ( Op ) Op2
+     | id Op2
+     | num Op2
+
+Op2 -> + Op Op2
+      | - Op Op2
+      | * Op Op2
+      | / Op Op2
+      | % Op Op2
+      | ε
 
 Flujo -> If                     flujo.NP = If.NP
         | If Else               flujo.NP = If.NP + Else.NP -1
         | While                 flujo.NP = while.NP
         | do { A } while ( C ) ;        flujo.NP =  A.NP + C.NP + 1
         | For                   flujo.NP = For.NP
-        | Switch                flujo.NP = switch.NP 
+        | Switch                flujo.NP = switch.NP
 
 If -> if ( C ) { A }            If.NP = C.NP + A.NP + 1
     | if ( C ) Exp              If.NP = C.NP + Exp.NP + 1
@@ -74,29 +76,32 @@ Switch -> switch ( Func ) { Cases default : A }      Switch.NP = Func.NP + cases
 Return -> | return ( Func )             Return.NP = 1
           | return Id                   Return.NP = 1
 
-C -> ( C )      C.NP = C.NP
-    | C Comp C  C.NP = C.NP + Comp.NP + C.NP
-    | id        C.NP = 0
-    | num       C.NP = 0
-    | Boolean   C.NP = 0
+C -> ( C ) C2      C.NP = C.NP + C2.NP
+    | id C2        C.NP = C2.NP
+    | num C2       C.NP = C2.NP
+    | Boolean C2   C.NP = Boolean.NP + C2.NP
 
-Comp -> = =     Comp.NP = 0
-        | ! =   Comp.NP = 0
-        | >     Comp.NP = 0
-        | <     Comp.NP = 0
-        | > =   Comp.NP = 0
-        | < =   Comp.NP = 0
-        | < >   Comp.NP = 0
-        | & &   Comp.NP = 1
-        | | |   Comp.NP = 1
+C2 -> Comp C C2       C2.NP = Comp.NP + C.NP +  C2.NP
+      | ε             C2.NP = 0
 
-Boolean -> True
-            | False
+
+Comp ->   >    Comp.NP = 0
+        | <    Comp.NP = 0
+        | >=   Comp.NP = 0
+        | <=   Comp.NP = 0
+        | ==   Comp.NP = 0
+        | !=   Comp.NP = 0
+        | &&   Comp.NP = 1
+        | ||   Comp.NP = 1
+        | &    Comp.NP = 1
+        | |    Comp.NP = 1
+
+Boolean -> True       Boolean.NP = 0
+            | False   Boolean.NP = 0
 
 Ids -> id
     | id , Ids
-    | ε 
+    | ε
 
 Cases -> case id: A Cases               Cases.NP = A.NP + Cases.NP
         | case num : A Cases            Cases.NP = A.NP + Cases.NP
-
