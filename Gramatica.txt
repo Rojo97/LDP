@@ -1,4 +1,4 @@
-S -> Tipo id ( Args ) { A }             NPATH = fragmento1.NP * fragmento2.NP *....* fragmentok.NP
+S -> Tipo id ( Args ) { A }             NPATH = A.NP
 
 Tipo -> TipoSimple
         | TipoComp
