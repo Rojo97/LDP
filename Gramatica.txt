@@ -1,4 +1,4 @@
-S -> Tipo id ( Args ) { A }
+S -> Tipo id ( Args ) { A }             NPATH = fragmento1.NP * fragmento2.NP *....* fragmentok.NP
 
 Tipo -> TipoSimple
         | TipoComp
@@ -19,9 +19,9 @@ TipoComp -> signed TipoSimple
 Args -> Arg 
         | Arg Args
 
-A -> Exp A
-    | Flujo A
-    | ε
+A -> Exp A      A.NP = Exp.NP * A"dentro".NP
+    | Flujo A   A.NP = Flujo.NP * A"dentro".NP
+    | ε         A.NP = 1
 
 Arg -> Tipo id
         | Tipo id ,
@@ -29,16 +29,16 @@ Arg -> Tipo id
         | id
         | ε
 
-Exp -> Asig ;
-        | Func ;
-        | Return ;
-        | break ;
+Exp -> Asig ;               Exp.NP = Asig.NP
+        | Func ;            Exp.NP = Func.NP
+        | Return ;          Exp.NP = Return.NP
+        | break ;           Exp.NP = 1
 
-Asig -> Tipo id = Func ;
-        | Tipo Ids ;
+Asig -> Tipo id = Func ;        Asig.NP = 1
+        | Tipo Ids ;            Asig.NP = 1
 
-Func -> ID ( Args ) ;
-        | Op
+Func -> ID ( Args ) ;           Func.NP = 1
+        | Op                    Func.NP = 1
 
 Op ->  ( Op )
      | Op + Op
@@ -49,46 +49,46 @@ Op ->  ( Op )
      | id
      | num
 
-Flujo -> If
-        | If Else 
-        | While
-        | do { A } while ( C ) ;
-        | For
-        | Switch
+Flujo -> If                     flujo.NP = If.NP
+        | If Else               flujo.NP = If.NP + Else.NP -1
+        | While                 flujo.NP = while.NP
+        | do { A } while ( C ) ;        flujo.NP =  A.NP + C.NP + 1
+        | For                   flujo.NP = For.NP
+        | Switch                flujo.NP = switch.NP 
 
-If -> if ( C ) { A }
-    | if ( C ) Exp
+If -> if ( C ) { A }            If.NP = C.NP + A.NP + 1
+    | if ( C ) Exp              If.NP = C.NP + Exp.NP + 1
 
-Else -> else { A }
-        | else Exp
+Else -> else { A }              Else.NP = A.NP
+        | else Exp              Else.NP = Exp.NP
 
-While -> while ( C ) { A }
-        | while ( C ) Exp
+While -> while ( C ) { A }      While.NP = C.NP + A.NP + 1
+        | while ( C ) Exp       While.NP = C.NP + Exp.NP + 1
 
-For -> for ( Asig ; C ; Func ) { A }
-        | for ( Asig ; C ; Func ) Exp
+For -> for ( Asig ; C ; Func ) { A }    For.NP = Asig.NP + C.NP + Func.NP + A.NP + 1
+        | for ( Asig ; C ; Func ) Exp   For.NP = Asig.NP + C.NP + Func.NP + Exp.NP + 1
 
-Switch -> switch ( Func ) { Cases default : A }
-        | switch ( Func ) { Cases }
+Switch -> switch ( Func ) { Cases default : A }      Switch.NP = Func.NP + cases.NP + A.NP
+        | switch ( Func ) { Cases }                  Switch.NP = Func.NP + cases.NP
 
-Return -> | return ( Func )
-          | return Id
+Return -> | return ( Func )             Return.NP = 1
+          | return Id                   Return.NP = 1
 
-C -> ( C )
-    | C Comp C
-    | id
-    | num
-    | Boolean
+C -> ( C )      C.NP = C.NP
+    | C Comp C  C.NP = C.NP + Comp.NP + C.NP
+    | id        C.NP = 0
+    | num       C.NP = 0
+    | Boolean   C.NP = 0
 
-Comp -> = =
-        | ! =
-        | >
-        | <
-        | > =
-        | < =
-        | < >
-        | & &
-        | | |
+Comp -> = =     Comp.NP = 0
+        | ! =   Comp.NP = 0
+        | >     Comp.NP = 0
+        | <     Comp.NP = 0
+        | > =   Comp.NP = 0
+        | < =   Comp.NP = 0
+        | < >   Comp.NP = 0
+        | & &   Comp.NP = 1
+        | | |   Comp.NP = 1
 
 Boolean -> True
             | False
@@ -97,6 +97,6 @@ Ids -> id
     | id , Ids
     | ε 
 
-Cases -> case id: A Cases
-
+Cases -> case id: A Cases               Cases.NP = A.NP + Cases.NP
+        | case num : A Cases            Cases.NP = A.NP + Cases.NP
 
