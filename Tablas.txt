@@ -1,4 +1,3 @@
-
 S             FIRST(FIRST(Tipo))                                            FOLLOW($)
 Tipo          FIRST(FIRST(TipoSimple),FIRST(TipoComp),void)                 FOLLOW(id)
 TipoSimple    FIRST(int,boolean,byte,float,char,double,long,short)          FOLLOW()
@@ -28,6 +27,7 @@ Cases         FIRST(case)                                                   FOLL
 
 
 
+SIGUIENTES
 
 S	$
 Tipo	id, ε
