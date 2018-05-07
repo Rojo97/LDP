@@ -1,7 +1,7 @@
 S -> Tipo id ( Args ) { A }
 Tipo -> TipoSimple | TipoComp | void | struct id
 TipoSimple ->   int | boolean | byte | float | char | double | long Aux | short | const | volatile
-Aux -> double | EPSILON
+AuxLong -> double | EPSILON
 TipoComp -> signed TipoSimple | unsigned TipoSimple
 A -> Exp A | Flujo A  | EPSILON
 ArgsDef -> ArgDef ArgsDef | , ArgsDef | EPSILON
@@ -13,14 +13,15 @@ Asig -> Tipo Ids Asig2
 Asig2 -> AsigValor | EPSILON
 AsigValor -> = FuncLla AsigValor | , AsigValor | EPSILON
 FuncDef -> id ( ArgsDef )
-FuncLla -> id ( ArgsLla ) | Op
-Op ->  ( Op ) Op2 | id Op2 | num Op2
-Op2 -> + Op Op2 | - Op Op2 | * Op Op2 | / Op Op2 | % Op Op2| EPSILON
+FuncLla -> id ( ArgsLla )
+Op ->  ( Op ) Op2 | id AuxOp | num Op2
+AuxOp -> ( ArgsLla ) | Op2
+Op2 -> + Op Op2 | - Op Op2 | * Op Op2 | / Op Op2 | % Op Op2 | EPSILON
 Flujo -> If Else | While | do { A } while ( C ) ; | For | Switch
 If -> if ( C ) Interior
 Else -> else Interior | EPSILON
 While -> while ( C ) Interior
-For -> for ( Asig ; C ; FuncLla ) Interior
+For -> for ( Asig ; C ; Op ) Interior
 Interior -> { A } | Exp
 Switch -> switch ( FuncLla ) { Cases }
 Return -> return Return2
