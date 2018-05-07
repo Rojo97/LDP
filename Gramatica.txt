@@ -1,9 +1,9 @@
-S -> Tipo id ( Args ) { A }             NPATH = A.NP
+S -> Tipo id ( ArgsDef ) { A }             NPATH = A.NP
 
 Tipo -> TipoSimple
         | TipoComp
         | void
-        | id
+        | struct id
 
 TipoSimple ->   int
             | boolean
@@ -11,43 +11,62 @@ TipoSimple ->   int
             | float
             | char
             | double
-            | long
+            | long AuxLong
             | short
+            | const
+            | volatile
+
+AuxLong -> double
+           | ε
 
 TipoComp -> signed TipoSimple
          | unsigned TipoSimple
 
-Args -> Arg Args
-        | , Args
-        | ε
-
-A -> Exp A      A.NP = Exp.NP * A"dentro".NP
-    | Flujo A   A.NP = Flujo.NP * A"dentro".NP
+A -> Exp A      A.NP = Exp.NP * A.NP
+    | Flujo A   A.NP = Flujo.NP * A.NP
     | ε         A.NP = 1
 
-Arg -> Tipo id
-        | id
+ArgsDef -> ArgDef ArgsDef
+        | , ArgsDef
+        | ε
+
+ArgDef -> Tipo id
+          | id
 
 Exp -> Asig ;               Exp.NP = Asig.NP
-        | Func ;            Exp.NP = Func.NP
+        | Op ;              Exp.NP = Op.NP
         | Return ;          Exp.NP = Return.NP
         | break ;           Exp.NP = 1
 
-Asig -> Tipo Asig2         Asig.NP = 1
+Asig -> Tipo Ids AsigValor         Asig.NP = 1
 
-Asig2 -> AsigValor
-        | Ids
-
-AsigValor -> id = Func AsigValor
-        | , AsigValor
+AsigValor -> = Op AsigValor
+        | , id AsigValor
         | ε
 
-Func -> id ( Args )           Func.NP = 1
-        | Op                    Func.NP = 1
+ArgsLla -> Valor ArgsLla
+           | , ArgsLla
+           | ε
+
+Valor -> id
+          | num
+          | String
+
+String -> " String2 "
+         | ' String2 '
+
+String2 -> id String2
+          | ε
 
 Op ->  ( Op ) Op2
-     | id Op2
+     | id AuxOP
      | num Op2
+
+AuxOP -> ( ArgsLla ) Op2
+        | Op2
+        | ++
+        | --
+        | [ Valor ]
 
 Op2 -> + Op Op2
       | - Op Op2
@@ -69,14 +88,16 @@ Else -> else Interior              Else.NP = Interior.NP -1
 
 While -> while ( C ) Interior      While.NP = C.NP + Interior.NP + 1
 
-For -> for ( Asig ; C ; Func ) Interior    For.NP = Asig.NP + C.NP + Func.NP + Interior.NP + 1
+For -> for ( Asig ; C ; Op ) Interior    For.NP = Asig.NP + C.NP + Op.NP + Interior.NP + 1
 
-Switch ->  switch ( Func ) { Cases }                  Switch.NP = Func.NP + cases.NP
+Switch ->  switch ( Op ) { Cases }                  Switch.NP = Func.NP + cases.NP
 
 Return -> return Return2                  Return.NP = 1
 
-Return2 -> ( Func )
+Return2 -> ( Op )
            | id
+           | num
+           | String
 
 C -> ( C ) C2      C.NP = C.NP + C2.NP
     | id C2        C.NP = C2.NP
@@ -85,7 +106,6 @@ C -> ( C ) C2      C.NP = C.NP + C2.NP
 
 C2 -> Comp C C2       C2.NP = Comp.NP + C.NP +  C2.NP
       | ε             C2.NP = 0
-
 
 Comp ->   >    Comp.NP = 0
         | <    Comp.NP = 0
@@ -99,14 +119,13 @@ Comp ->   >    Comp.NP = 0
         | |    Comp.NP = 1
 
 Boolean -> true       Boolean.NP = 0
-            | false   Boolean.NP = 0
+          | false   Boolean.NP = 0
 
 Ids -> id Ids
     | , Ids
     | ε
 
-Cases -> case id: A Cases               Cases.NP = A.NP + Cases.NP
-        | case num : A Cases            Cases.NP = A.NP + Cases.NP
+Cases -> case Valor : A Cases          Cases.NP = A.NP + Cases.NP
         | default : A Cases             Cases.NP = A.NP + Cases.NP
         | ε                             Cases.NP = 0
 

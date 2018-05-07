@@ -1,35 +1,33 @@
-S -> Tipo id ( Args ) { A }
+S -> Tipo id ( ArgsDef ) { A }
 Tipo -> TipoSimple | TipoComp | void | struct id
-TipoSimple ->   int | boolean | byte | float | char | double | long Aux | short | const | volatile
+TipoSimple ->   int | boolean | byte | float | char | double | long AuxLong | short | const | volatile
 AuxLong -> double | EPSILON
 TipoComp -> signed TipoSimple | unsigned TipoSimple
-A -> Exp A | Flujo A  | EPSILON
+A -> Exp A | Flujo A | EPSILON
 ArgsDef -> ArgDef ArgsDef | , ArgsDef | EPSILON
-ArgDef -> Tipo id
-ArgsLla -> ArgLla ArgsLla | , ArgsLla | EPSILON
-ArgLla -> id | num | ' id '
-Exp -> Asig ; | FuncLla ; | Return ; | break ;
-Asig -> Tipo Ids Asig2
-Asig2 -> AsigValor | EPSILON
-AsigValor -> = FuncLla AsigValor | , AsigValor | EPSILON
-FuncDef -> id ( ArgsDef )
-FuncLla -> id ( ArgsLla )
-Op ->  ( Op ) Op2 | id AuxOp | num Op2
-AuxOp -> ( ArgsLla ) | Op2
+ArgDef -> Tipo id | id
+Exp -> Asig ; | Op ; | Return ; | break ;       
+Asig -> Tipo Ids AsigValor
+AsigValor -> = Op AsigValor | , id AsigValor | EPSILON
+ArgsLla -> Valor ArgsLla | , ArgsLla | EPSILON
+Valor -> id | num | String
+String -> " String2 " | ' String2 '
+String2 -> id String2 | EPSILON
+Op ->  ( Op ) Op2 | id AuxOP | num Op2
+AuxOP -> ( ArgsLla ) Op2 | Op2 | ++ | -- | [ Valor ]
 Op2 -> + Op Op2 | - Op Op2 | * Op Op2 | / Op Op2 | % Op Op2 | EPSILON
-Flujo -> If Else | While | do { A } while ( C ) ; | For | Switch
+Flujo -> If Else | While | do { A } while ( C ) ; | For | Switch              
 If -> if ( C ) Interior
 Else -> else Interior | EPSILON
 While -> while ( C ) Interior
 For -> for ( Asig ; C ; Op ) Interior
-Interior -> { A } | Exp
-Switch -> switch ( FuncLla ) { Cases }
+Switch ->  switch ( Op ) { Cases }
 Return -> return Return2
-Return2 -> ( FuncLla ) | id
+Return2 -> ( Op ) | id | num | String
 C -> ( C ) C2 | id C2 | num C2 | Boolean C2
 C2 -> Comp C C2 | EPSILON
-Comp ->   > | < | >=  | <= | == | != | && | || | & | |
+Comp -> > | < | >= | <= | == | != | && | || | & | |
 Boolean -> true | false
 Ids -> id Ids | , Ids | EPSILON
-Valores -> id | num
-Cases -> case Valores : A Cases | default : A Cases | EPSILON
+Cases -> case Valor : A Cases | default : A Cases | EPSILON
+Interior -> { A } | Exp
