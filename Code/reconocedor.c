@@ -46,7 +46,6 @@ void A() {
         Flujo();
     }
 
-    }
 }
 void Flujo() {
     switch(preanalisis) {
