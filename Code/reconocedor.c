@@ -3,8 +3,8 @@
 
 File *file;
 int preanalisis;
-int NPath = 0;
-int if, else, while, for, switch;
+int NPath = 1;
+int if, else, while, for, switch, flujo;
 
 
 
@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
 
     preanalisis = yylex();
     S();
+    printf("El valor de NPATH es: %d", NPath);
 
 }
 
@@ -44,10 +45,13 @@ void S() {
 void A() {
     if (preanalisis != null) {
         Flujo();
+        NPath = NPath * flujo;
+        A();
     }
 
 }
 void Flujo() {
+    flujo = 0;
     switch(preanalisis) {
         case 'IF':
             parea('IF');
@@ -55,10 +59,12 @@ void Flujo() {
             else = 0;
             If();
             Else();
+            flujo = flujo + if + else;
         case 'WHILE':
             parea('WHILE');
             while = 0;
             While();
+            flujo = flujo + while;
         case 'DO':
             parea('DO');
             parea('{')
@@ -66,21 +72,23 @@ void Flujo() {
             parea('}')
             while = 0;
             While();
+            flujo = flujo + while;
         case 'FOR':
             parea('FOR');
             for = 0;
             For();
+            flujo = flujo + for;
         case 'SWITCH':
             parea('SWITCH');
             switch = 0;
             Switch();
+            flujo = flujo + switch;
         case 'RETURN':
             parea('RETURN');
-            NPath++;
+            flujo++;
         case 'BREAK':
             parea('BREAK');
-            NPath++;
-       
+            flujo++;  
     }
 }
 
@@ -90,6 +98,7 @@ void If() {
         C();
         parea(')');
         Interior();
+        if++;
     }      
 }
  void C() {
@@ -100,16 +109,16 @@ void If() {
       switch (preanalisis) {
         case 'AND':
             parea('AND');
-            if++;
+            flujo++;
         case 'OR':
             parea('OR');
-            if++;
+            flujo++;
         case 'ANDBIT':
             parea('ANDBIT');
-            if++;
+            flujo++;
         case 'ORBIT':
             parea('ORBIT');
-           if++;     
+            flujo++;     
       }       
  }
 
@@ -124,6 +133,7 @@ void Else() {
     if (preanalisis == 'ELSE') {
         parea('ELSE')
         Interior();
+        if--;
     }
 }
 void While() {
@@ -132,6 +142,7 @@ void While() {
         C();
         parea(')');
         Interior();
+        while++;
     }
 }
 
@@ -141,6 +152,7 @@ void For(){
         C();
         parea(')');
         Interior();
+        for += 3; 
     }
 }
 void Switch() {
@@ -148,6 +160,7 @@ void Switch() {
     parea(')');
     parea('{');
     Cases();
+    switch++;
 }
 
 void Cases() {
