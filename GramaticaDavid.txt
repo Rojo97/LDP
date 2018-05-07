@@ -1,0 +1,114 @@
+S -> Tipo id ( Args ) { A }             NPATH = A.NP
+
+Tipo -> TipoSimple
+        | TipoComp
+        | void
+        | id
+
+TipoSimple ->   int
+            | boolean
+            | byte
+            | float
+            | char
+            | double
+            | long
+            | short
+
+TipoComp -> signed TipoSimple
+         | unsigned TipoSimple
+
+Args -> Arg Args
+        | , Args
+        | ε
+
+A -> Exp A      A.NP = Exp.NP * A"dentro".NP
+    | Flujo A   A.NP = Flujo.NP * A"dentro".NP
+    | ε         A.NP = 1
+
+Arg -> Tipo id
+        | id
+
+Exp -> Asig ;               Exp.NP = Asig.NP
+        | Func ;            Exp.NP = Func.NP
+        | Return ;          Exp.NP = Return.NP
+        | break ;           Exp.NP = 1
+
+Asig -> Tipo Asig2         Asig.NP = 1
+
+Asig2 -> AsigValor
+        | Ids
+
+AsigValor -> id = Func AsigValor
+        | , AsigValor
+        | ε
+
+Func -> id ( Args )           Func.NP = 1
+        | Op                    Func.NP = 1
+
+Op ->  ( Op ) Op2
+     | id Op2
+     | num Op2
+
+Op2 -> + Op Op2
+      | - Op Op2
+      | * Op Op2
+      | / Op Op2
+      | % Op Op2
+      | ε
+
+Flujo -> If Else               flujo.NP = If.NP + Else.NP
+        | While                 flujo.NP = while.NP
+        | do { A } while ( C ) ;        flujo.NP =  A.NP + C.NP + 1
+        | For                   flujo.NP = For.NP
+        | Switch                flujo.NP = switch.NP
+
+If -> if ( C ) Interior         If.NP = C.NP + Interior.NP + 1
+
+Else -> else Interior              Else.NP = Interior.NP -1
+        | ε                        Else.NP = 0
+
+While -> while ( C ) Interior      While.NP = C.NP + Interior.NP + 1
+
+For -> for ( Asig ; C ; Func ) Interior    For.NP = Asig.NP + C.NP + Func.NP + Interior.NP + 1
+
+Switch ->  switch ( Func ) { Cases }                  Switch.NP = Func.NP + cases.NP
+
+Return -> return Return2                  Return.NP = 1
+
+Return2 -> ( Func )
+           | id
+
+C -> ( C ) C2      C.NP = C.NP + C2.NP
+    | id C2        C.NP = C2.NP
+    | num C2       C.NP = C2.NP
+    | Boolean C2   C.NP = Boolean.NP + C2.NP
+
+C2 -> Comp C C2       C2.NP = Comp.NP + C.NP +  C2.NP
+      | ε             C2.NP = 0
+
+
+Comp ->   >    Comp.NP = 0
+        | <    Comp.NP = 0
+        | >=   Comp.NP = 0
+        | <=   Comp.NP = 0
+        | ==   Comp.NP = 0
+        | !=   Comp.NP = 0
+        | &&   Comp.NP = 1
+        | ||   Comp.NP = 1
+        | &    Comp.NP = 1
+        | |    Comp.NP = 1
+
+Boolean -> true       Boolean.NP = 0
+            | false   Boolean.NP = 0
+
+Ids -> id Ids
+    | , Ids
+    | ε
+
+Cases -> case id: A Cases               Cases.NP = A.NP + Cases.NP
+        | case num : A Cases            Cases.NP = A.NP + Cases.NP
+        | default : A Cases             Cases.NP = A.NP + Cases.NP
+        | ε                             Cases.NP = 0
+
+Interior -> { A }               Interior.NP = A.NP
+        | Exp                   Interior.NP = Exp.NP
