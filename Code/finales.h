@@ -32,5 +32,8 @@
 #define OR 288
 #define ANDBIT 289
 #define ORBIT 290
-#define TRUE 291
-#define FALSE 292
+#define TRUEW 291
+#define FALSEW 292
+#define INCREMENT 293
+#define DECREMENT 294
+#define NULLW 295
