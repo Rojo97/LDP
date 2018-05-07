@@ -20,8 +20,9 @@ For -> for ( C ) Interior    For.NP = C.NP + Interior.NP + 3
 
 Switch ->  switch ( ) { Cases }        Switch.NP = 1 + Cases.NP
 
-C ->( C )
+C ->( C ) C      C.NP = C.NP + C.NP
     | Comp C     C.NP = Comp.NP + C.NP
+    | ε          C.NP = 0
 
 Comp ->  &&   Comp.NP = 1
         | ||   Comp.NP = 1
