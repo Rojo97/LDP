@@ -1,9 +1,12 @@
-#include "Lexx.yy.c"
+#include "lex.yy.c"
 #include <stdlib.h>
 
 File *file;
 int preanalisis;
 int NPath = 0;
+int if, else, while, for, switch;
+
+
 
 int main(int argc, char **argv) {
     if (argc == 2) {
@@ -27,43 +30,136 @@ void parea(int token) {
 		exit (1) ;
 	}
 }
-
 void S() {
-    switch(preanalisis) {
-        case 'INT':
-            parea(INT);
-            break;
-        case 'BOOLEAN':
-            parea(BOOLEAN);
-            break;
-        case 'BYTE':
-            parea(BOOLEAN);
-            break;
-        case 'FLOAT':
-            parea(FLOAT);
-            break;
-        case 'CHAR':
-            parea(CHAR);
-            break;
-        case 'DOUBLE':
-            parea(DOUBLE);
-            break;
-        case 'LONG':
-            parea(LONG);
-            break;
-        case 'SHORT':
-            parea(SHORT);
-            break;
-        case 'VOID':
-            parea(VOID);
-            break;
-        case 'SIGNED':
-            parea(SIGNED);
-            break;
-        case 'UNSIGNED':
-            parea(UNSIGNED);
-            break;
+    if (preanalisis == '{') {
+         parea('{');
+         A();
+         parea('}');
+    }    
+    else {
+        exit(0);
+    }
+  
+}
+void A() {
+    if (preanalisis != null) {
+        Flujo();
+    }
 
+    }
+}
+void Flujo() {
+    switch(preanalisis) {
+        case 'IF':
+            parea('IF');
+            if = 0;
+            else = 0;
+            If();
+            Else();
+        case 'WHILE':
+            parea('WHILE');
+            while = 0;
+            While();
+        case 'DO':
+            parea('DO');
+            parea('{')
+            A();
+            parea('}')
+            while = 0;
+            While();
+        case 'FOR':
+            parea('FOR');
+            for = 0;
+            For();
+        case 'SWITCH':
+            parea('SWITCH');
+            switch = 0;
+            Switch();
+        case 'RETURN':
+            parea('RETURN');
+            NPath++;
+        case 'BREAK':
+            parea('BREAK');
+            NPath++;
+       
+    }
+}
+
+void If() {
+    if(preanalisis == '('){
+        parea('(');
+        C();
+        parea(')');
+        Interior();
+    }      
+}
+ void C() {
+     Comp();
+     C();
+ }
+ void Comp() {
+      switch (preanalisis) {
+        case 'AND':
+            parea('AND');
+            if++;
+        case 'OR':
+            parea('OR');
+            if++;
+        case 'ANDBIT';
+            parea('ANDBIT');
+            if++;
+        case 'ORBIT':
+            parea('ORBIT');
+           if++;     
+ }
+
+int Interior() {
+    if (preanalisis == '{') {
+         parea('{');
+         A();
+         parea('}');
+    } 
+}
+void Else() {
+    if (preanalisis == 'ELSE') {
+        parea('ELSE')
+        Interior();
+    }
+}
+void While() {
+    if(preanalisis == '('){
+        parea('(');
+        C();
+        parea(')');
+        Interior();
+    }
+}
+
+void For(){
+    if(preanalisis == '('){
+        parea('(');
+        C();
+        parea(')');
+        Interior();
+    }
+}
+void Switch() {
+    parea('(');
+    parea(')');
+    parea('{');
+    Cases();
+}
+
+void Cases() {
+    if(preanalisis == 'CASE'){
+            parea('CASE');
+            A();
+            Cases();
+    }
+    else if(preanalisis == 'DEFAULT'){
+        parea('DEFAULT');
+        A();
+        Cases();
     }
 }
 
