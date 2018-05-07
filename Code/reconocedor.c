@@ -111,6 +111,7 @@ void If() {
         case 'ORBIT':
             parea('ORBIT');
            if++;     
+      }       
  }
 
 int Interior() {
