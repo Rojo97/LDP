@@ -105,7 +105,7 @@ void If() {
         case 'OR':
             parea('OR');
             if++;
-        case 'ANDBIT';
+        case 'ANDBIT':
             parea('ANDBIT');
             if++;
         case 'ORBIT':
