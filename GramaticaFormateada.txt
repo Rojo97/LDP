@@ -1,0 +1,34 @@
+S -> Tipo id ( Args ) { A }
+Tipo -> TipoSimple | TipoComp | void | struct id
+TipoSimple ->   int | boolean | byte | float | char | double | long Aux | short | const | volatile
+Aux -> double | EPSILON
+TipoComp -> signed TipoSimple | unsigned TipoSimple
+A -> Exp A | Flujo A  | EPSILON
+ArgsDef -> ArgDef ArgsDef | , ArgsDef | EPSILON
+ArgDef -> Tipo id
+ArgsLla -> ArgLla ArgsLla | , ArgsLla | EPSILON
+ArgLla -> id | num | ' id '
+Exp -> Asig ; | FuncLla ; | Return ; | break ;
+Asig -> Tipo Ids Asig2
+Asig2 -> AsigValor | EPSILON
+AsigValor -> = FuncLla AsigValor | , AsigValor | EPSILON
+FuncDef -> id ( ArgsDef )
+FuncLla -> id ( ArgsLla ) | Op
+Op ->  ( Op ) Op2 | id Op2 | num Op2
+Op2 -> + Op Op2 | - Op Op2 | * Op Op2 | / Op Op2 | % Op Op2| EPSILON
+Flujo -> If Else | While | do { A } while ( C ) ; | For | Switch
+If -> if ( C ) Interior
+Else -> else Interior | EPSILON
+While -> while ( C ) Interior
+For -> for ( Asig ; C ; FuncLla ) Interior
+Interior -> { A } | Exp
+Switch -> switch ( FuncLla ) { Cases }
+Return -> return Return2
+Return2 -> ( FuncLla ) | id
+C -> ( C ) C2 | id C2 | num C2 | Boolean C2
+C2 -> Comp C C2 | EPSILON
+Comp ->   > | < | >=  | <= | == | != | && | || | & | |
+Boolean -> true | false
+Ids -> id Ids | , Ids | EPSILON
+Valores -> id | num
+Cases -> case Valores : A Cases | default : A Cases | EPSILON
