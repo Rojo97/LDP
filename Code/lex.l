@@ -67,6 +67,8 @@ short		       	  return SHORT;
 signed		     	  return SIGNED;
 unsigned	      	  return UNSIGNED;
 void		       	  return VOID;
+const                 return CONST;
+volatile              return VOLATILE;
 {id}		       	  return ID;
 {num}	 	     	  return NUMBER;
        
