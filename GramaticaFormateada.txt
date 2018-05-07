@@ -1,33 +1,23 @@
-S -> Tipo id ( ArgsDef ) { A }
-Tipo -> TipoSimple | TipoComp | void | struct id
-TipoSimple ->   int | boolean | byte | float | char | double | long AuxLong | short | const | volatile
-AuxLong -> double | EPSILON
-TipoComp -> signed TipoSimple | unsigned TipoSimple
-A -> Exp A | Flujo A | EPSILON
-ArgsDef -> ArgDef ArgsDef | , ArgsDef | EPSILON
-ArgDef -> Tipo id | id
-Exp -> Asig ; | Op ; | Return ; | break ;       
-Asig -> Tipo Ids AsigValor
-AsigValor -> = Op AsigValor | , id AsigValor | EPSILON
-ArgsLla -> Valor ArgsLla | , ArgsLla | EPSILON
-Valor -> id | num | String
-String -> " String2 " | ' String2 '
-String2 -> id String2 | EPSILON
-Op ->  ( Op ) Op2 | id AuxOP | num Op2
-AuxOP -> ( ArgsLla ) Op2 | Op2 | ++ | -- | [ Valor ]
-Op2 -> + Op Op2 | - Op Op2 | * Op Op2 | / Op Op2 | % Op Op2 | EPSILON
-Flujo -> If Else | While | do { A } while ( C ) ; | For | Switch              
-If -> if ( C ) Interior
-Else -> else Interior | EPSILON
+S -> { A }
+A -> Flujo A   
+    | ; A      
+    | ε
+Flujo -> If Else             
+        | While                
+        | do { A } while ( C ) ;   
+        | For                 
+        | Switch                           
+If -> if ( C ) Interior        1
+Else -> else Interior    
 While -> while ( C ) Interior
-For -> for ( Asig ; C ; Op ) Interior
-Switch ->  switch ( Op ) { Cases }
-Return -> return Return2
-Return2 -> ( Op ) | Valor
-C -> ( C ) C2 | id C2 | num C2 | Boolean C2
-C2 -> Comp C C2 | EPSILON
-Comp -> > | < | >= | <= | == | != | && | || | & | |
-Boolean -> true | false
-Ids -> id Ids | , Ids | EPSILON
-Cases -> case Valor : A Cases | default : A Cases | EPSILON
-Interior -> { A } | Exp
+For -> for ( ; C ; ) Interior   
+Switch ->  switch ( ) { Cases }     
+C -> Comp C     
+Comp ->  && 
+        | ||  
+        | &    
+        | |    
+Cases -> case : A Cases         
+        | default : A Cases      
+        | ε                         
+Interior -> { A }           
