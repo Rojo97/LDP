@@ -52,7 +52,9 @@ while	        	  return WHILE;
 [[]		              |
 []]                   |
 [}]                   | 
-[)]                   return yytext[0];
+[)]                   |
+[']                   |
+["]                   return yytext[0];
 null		          return NULLW;
 true		          return TRUEW;
 false		          return FALSEW;

@@ -37,3 +37,5 @@
 #define INCREMENT 293
 #define DECREMENT 294
 #define NULLW 295
+#define VOLATILE 296
+#define CONST 297

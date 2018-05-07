@@ -58,9 +58,9 @@ String -> " String2 "
 String2 -> id String2
           | ε
 
-Op ->  ( Op ) Op2
-     | id AuxOP
-     | num Op2
+Op ->  ( Op ) Op2   OP.NP = 1
+     | id AuxOP     OP.NP = 1
+     | num Op2      OP.NP = 1
 
 AuxOP -> ( ArgsLla ) Op2
         | Op2
@@ -75,11 +75,11 @@ Op2 -> + Op Op2
       | % Op Op2
       | ε
 
-Flujo -> If Else               flujo.NP = If.NP + Else.NP
-        | While                 flujo.NP = while.NP
-        | do { A } while ( C ) ;        flujo.NP =  A.NP + C.NP + 1
-        | For                   flujo.NP = For.NP
-        | Switch                flujo.NP = switch.NP
+Flujo -> If Else               Flujo.NP = If.NP + Else.NP
+        | While                 Flujo.NP = While.NP
+        | do { A } while ( C ) ;        Flujo.NP =  A.NP + C.NP + 1
+        | For                   Flujo.NP = For.NP
+        | Switch                Flujo.NP = Switch.NP
 
 If -> if ( C ) Interior         If.NP = C.NP + Interior.NP + 1
 
@@ -90,14 +90,12 @@ While -> while ( C ) Interior      While.NP = C.NP + Interior.NP + 1
 
 For -> for ( Asig ; C ; Op ) Interior    For.NP = Asig.NP + C.NP + Op.NP + Interior.NP + 1
 
-Switch ->  switch ( Op ) { Cases }                  Switch.NP = Func.NP + cases.NP
+Switch ->  switch ( Op ) { Cases }        Switch.NP = Op.NP + Cases.NP
 
 Return -> return Return2                  Return.NP = 1
 
 Return2 -> ( Op )
-           | id
-           | num
-           | String
+           | Valor
 
 C -> ( C ) C2      C.NP = C.NP + C2.NP
     | id C2        C.NP = C2.NP
@@ -119,15 +117,15 @@ Comp ->   >    Comp.NP = 0
         | |    Comp.NP = 1
 
 Boolean -> true       Boolean.NP = 0
-          | false   Boolean.NP = 0
+          | false     Boolean.NP = 0
 
 Ids -> id Ids
     | , Ids
     | ε
 
 Cases -> case Valor : A Cases          Cases.NP = A.NP + Cases.NP
-        | default : A Cases             Cases.NP = A.NP + Cases.NP
-        | ε                             Cases.NP = 0
+        | default : A Cases            Cases.NP = A.NP + Cases.NP
+        | ε                            Cases.NP = 0
 
 Interior -> { A }               Interior.NP = A.NP
         | Exp                   Interior.NP = Exp.NP
