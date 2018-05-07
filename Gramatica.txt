@@ -18,6 +18,7 @@ TipoComp -> signed TipoSimple
          | unsigned TipoSimple
 
 Args -> Arg Args
+        | , Args
         | ε
 
 A -> Exp A      A.NP = Exp.NP * A"dentro".NP
@@ -25,8 +26,6 @@ A -> Exp A      A.NP = Exp.NP * A"dentro".NP
     | ε         A.NP = 1
 
 Arg -> Tipo id
-        | Tipo id ,
-        | id ,
         | id
 
 Exp -> Asig ;               Exp.NP = Asig.NP
@@ -34,10 +33,16 @@ Exp -> Asig ;               Exp.NP = Asig.NP
         | Return ;          Exp.NP = Return.NP
         | break ;           Exp.NP = 1
 
-Asig -> Tipo id = Func ;        Asig.NP = 1
-        | Tipo Ids ;            Asig.NP = 1
+Asig -> Tipo Asig2         Asig.NP = 1
 
-Func -> id ( Args ) ;           Func.NP = 1
+Asig2 -> AsigValor
+        | Ids
+
+AsigValor -> id = Func AsigValor
+        | , AsigValor
+        | ε
+
+Func -> id ( Args )           Func.NP = 1
         | Op                    Func.NP = 1
 
 Op ->  ( Op ) Op2
@@ -51,30 +56,27 @@ Op2 -> + Op Op2
       | % Op Op2
       | ε
 
-Flujo -> If                     flujo.NP = If.NP
-        | If Else               flujo.NP = If.NP + Else.NP -1
+Flujo -> If Else               flujo.NP = If.NP + Else.NP
         | While                 flujo.NP = while.NP
         | do { A } while ( C ) ;        flujo.NP =  A.NP + C.NP + 1
         | For                   flujo.NP = For.NP
         | Switch                flujo.NP = switch.NP
 
-If -> if ( C ) { A }            If.NP = C.NP + A.NP + 1
-    | if ( C ) Exp              If.NP = C.NP + Exp.NP + 1
+If -> if ( C ) Interior         If.NP = C.NP + Interior.NP + 1
 
-Else -> else { A }              Else.NP = A.NP
-        | else Exp              Else.NP = Exp.NP
+Else -> else Interior              Else.NP = Interior.NP -1
+        | ε                        Else.NP = 0
 
-While -> while ( C ) { A }      While.NP = C.NP + A.NP + 1
-        | while ( C ) Exp       While.NP = C.NP + Exp.NP + 1
+While -> while ( C ) Interior      While.NP = C.NP + Interior.NP + 1
 
-For -> for ( Asig ; C ; Func ) { A }    For.NP = Asig.NP + C.NP + Func.NP + A.NP + 1
-        | for ( Asig ; C ; Func ) Exp   For.NP = Asig.NP + C.NP + Func.NP + Exp.NP + 1
+For -> for ( Asig ; C ; Func ) Interior    For.NP = Asig.NP + C.NP + Func.NP + Interior.NP + 1
 
-Switch -> switch ( Func ) { Cases default : A }      Switch.NP = Func.NP + cases.NP + A.NP
-        | switch ( Func ) { Cases }                  Switch.NP = Func.NP + cases.NP
+Switch ->  switch ( Func ) { Cases }                  Switch.NP = Func.NP + cases.NP
 
-Return -> | return ( Func )             Return.NP = 1
-          | return Id                   Return.NP = 1
+Return -> return Return2                  Return.NP = 1
+
+Return2 -> ( Func )
+           | id
 
 C -> ( C ) C2      C.NP = C.NP + C2.NP
     | id C2        C.NP = C2.NP
@@ -99,9 +101,14 @@ Comp ->   >    Comp.NP = 0
 Boolean -> true       Boolean.NP = 0
             | false   Boolean.NP = 0
 
-Ids -> id
-    | id , Ids
+Ids -> id Ids
+    | , Ids
     | ε
 
 Cases -> case id: A Cases               Cases.NP = A.NP + Cases.NP
         | case num : A Cases            Cases.NP = A.NP + Cases.NP
+        | default : A Cases             Cases.NP = A.NP + Cases.NP
+        | ε                             Cases.NP = 0
+
+Interior -> { A }               Interior.NP = A.NP
+        | Exp                   Interior.NP = Exp.NP
