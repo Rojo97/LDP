@@ -20,4 +20,4 @@ Comp ->  &&
 Cases -> case : A Cases         
         | default : A Cases      
         | ε                         
-Interior -> { A }           
+Interior -> { A } | ;      
