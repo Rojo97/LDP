@@ -58,9 +58,16 @@ String -> " String2 "
 String2 -> id String2
           | ε
 
+<<<<<<< HEAD
+Op ->  ( Op ) Op2   Op.NP = 1
+     | id AuxOP     Op.NP = 1
+     | num Op2      Op.NP = 1
+     | null         Op.Np = 1
+=======
 Op ->  ( Op ) Op2   OP.NP = 1
      | id AuxOP     OP.NP = 1
      | num Op2      OP.NP = 1
+>>>>>>> 5e33f11efc7c1b114f7b3a4a117678732fae5ffb
 
 AuxOP -> ( ArgsLla ) Op2
         | Op2
