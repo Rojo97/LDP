@@ -28,8 +28,8 @@ Comp ->  &&   Comp.NP = 1
         | &    Comp.NP = 1
         | |    Comp.NP = 1
 
-Cases -> case : A Cases          Cases.NP = A.NP + Cases.NP
-        | default : A Cases            Cases.NP = A.NP + Cases.NP
+Cases -> case A Cases          Cases.NP = A.NP + Cases.NP
+        | default A Cases            Cases.NP = A.NP + Cases.NP
         | ε                            Cases.NP = 0
 
 Interior -> { A }               Interior.NP = A.NP
