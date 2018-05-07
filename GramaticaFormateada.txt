@@ -23,7 +23,7 @@ While -> while ( C ) Interior
 For -> for ( Asig ; C ; Op ) Interior
 Switch ->  switch ( Op ) { Cases }
 Return -> return Return2
-Return2 -> ( Op ) | id | num | String
+Return2 -> ( Op ) | Valor
 C -> ( C ) C2 | id C2 | num C2 | Boolean C2
 C2 -> Comp C C2 | EPSILON
 Comp -> > | < | >= | <= | == | != | && | || | & | |
