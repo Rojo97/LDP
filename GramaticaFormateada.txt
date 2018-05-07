@@ -6,7 +6,7 @@ Else -> else Interior
 While -> while ( C ) Interior
 For -> for ( C ) Interior   
 Switch ->  switch ( ) { Cases }     
-C -> Comp C     
+C -> ( C ) | Comp C     
 Comp ->  && | || | & | |    
 Cases -> case A Cases | default A Cases | EPSILON                         
 Interior -> { A } | EPSILON      
