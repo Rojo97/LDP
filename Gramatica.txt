@@ -3,6 +3,7 @@ S -> Tipo id ( Args ) { A }             NPATH = A.NP
 Tipo -> TipoSimple
         | TipoComp
         | void
+        | id
 
 TipoSimple ->   int
             | boolean
@@ -27,7 +28,7 @@ Arg -> Tipo id
         | Tipo id ,
         | id ,
         | id
-        
+
 Exp -> Asig ;               Exp.NP = Asig.NP
         | Func ;            Exp.NP = Func.NP
         | Return ;          Exp.NP = Return.NP
