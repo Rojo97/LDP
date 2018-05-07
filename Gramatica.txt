@@ -16,8 +16,8 @@ TipoSimple ->   int
 TipoComp -> signed TipoSimple
          | unsigned TipoSimple
 
-Args -> Arg
-        | Arg Args
+Args -> Arg Args
+        | ε
 
 A -> Exp A      A.NP = Exp.NP * A"dentro".NP
     | Flujo A   A.NP = Flujo.NP * A"dentro".NP
@@ -27,8 +27,7 @@ Arg -> Tipo id
         | Tipo id ,
         | id ,
         | id
-        | ε
-
+        
 Exp -> Asig ;               Exp.NP = Asig.NP
         | Func ;            Exp.NP = Func.NP
         | Return ;          Exp.NP = Return.NP
