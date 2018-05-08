@@ -71,7 +71,9 @@ int A() {
             NP2 = A();
             return (NP1 * NP2);
         case '(':
-          Parentesis();
+          parea('(');
+          NP1 = A();
+          parea(')');
           return A();
         case '}':
             return 1;
@@ -79,21 +81,10 @@ int A() {
             return 1;
         case DEFAULT:
             return 1;
+        case ')':
+            return 1;
         default :
             return 1;
-    }
-}
-
-void Parentesis() {
-    int NP1 = 0;
-     int NP2 = 0;
-    if(preanalisis == '('){
-        parea('(');
-        Parentesis();
-        parea(')');
-    }else if(preanalisis == ')'){
-    }else{
-      printf("Hay un error en los parentesis\n");
     }
 }
 
@@ -263,9 +254,9 @@ int C() {
         NP2 = Cases();
         return ( NP1 + NP2 );
     } else if (preanalisis == '}'){
-        return 1;
+        return 0;
     } else {
-        return 1; 
+        return 0; 
     }
 }
 int Interior() {
