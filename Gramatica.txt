@@ -17,9 +17,9 @@ Else -> else Interior              Else.NP = Interior.NP -1
 
 While -> while ( C ) Interior      While.NP = C.NP + Interior.NP + 1
 
-For -> for ( C ) Interior    For.NP = C.NP + Interior.NP + 3
+For -> for ( C ) Interior    For.NP = C.NP + Interior.NP + 1
 
-Switch ->  switch ( ) { Cases }        Switch.NP = 1 + Cases.NP
+Switch ->  switch ( C ) { Cases }        Switch.NP = C.NP + Cases.NP
 
 C ->( C ) C      C.NP = C.NP + C.NP
     | Comp C     C.NP = Comp.NP + C.NP

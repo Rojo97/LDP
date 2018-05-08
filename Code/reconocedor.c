@@ -166,7 +166,7 @@ int For(){
         NP1 = C();
         parea(')');
         NP2 = Interior();
-        return ( NP1 + NP2 +3 );
+        return ( NP1 + NP2 + 1 );
     } else {
         return 1;
     }
@@ -174,14 +174,16 @@ int For(){
 
 int Switch() {
     int NP1 = 0;
+    int NP2 = 0;
     if(preanalisis == SWITCH){
         parea(SWITCH);
         parea('(');
+        NP1 = C();
         parea(')');
         parea('{');
         NP1 = Cases();
         parea('}');
-        return ( NP1 + 1 );
+        return ( NP1 + NP2 );
     } else{
         return 1;
     }
