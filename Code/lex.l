@@ -17,10 +17,11 @@ while	        	  return WHILE;
 [|][|]		     	  return OR;
 [(]		              |
 [{]		              |
-[}]                   | 
+[}]                   |
 [)]                   return yytext[0];
 [ \t\n]+              |
 "//"[^\n]*            |
-"/*"[^"*/"]*"*/"      |
+"/*"[^"*/"]*"*/"      | // Corregir comentarios
+['].*[']              |
+["].*["]              |
 .                     ;
-       

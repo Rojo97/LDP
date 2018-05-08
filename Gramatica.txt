@@ -2,6 +2,10 @@ S -> { A }             NPATH = A.NP
 
 A -> Flujo A   A.NP = Flujo.NP * A.NP
     | ε         A.NP = 1
+    | Parentesis A   A.NP = A.NP 
+
+Parentesis -> ( Parentesis )
+              | ε
 
 Flujo -> If Else                Flujo.NP = If.NP + Else.NP
         | While                 Flujo.NP = While.NP

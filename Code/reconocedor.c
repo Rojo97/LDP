@@ -1,8 +1,24 @@
 #include "lex.yy.c"
 #include <stdlib.h>
+#include <stdio.h>
 
-File *file;
+FILE *file;
 int preanalisis;
+
+void parea(int token);
+int S();
+int A();
+int Flujo();
+int If();
+int Else();
+int While();
+int For();
+int Switch();
+int C();
+int Comp();
+int Cases();
+int Interior();
+void Parentesis();
 
 void parea(int token) {
     if (preanalisis == token) {
@@ -19,7 +35,7 @@ int S() {
          int NP = A();
          parea('}');
          return NP;
-    }    
+    }
     else {
         preanalisis = yylex();
 		if(preanalisis == 0){
@@ -28,7 +44,7 @@ int S() {
 		}
         return S();
     }
-  
+
 }
 int A() {
     int NP1 = 1;
@@ -54,6 +70,9 @@ int A() {
             NP1 = Flujo();
             NP2 = A();
             return (NP1 * NP2);
+        case '(':
+          Parentesis();
+          return A();
         case '}':
             return 1;
         case CASE:
@@ -61,9 +80,23 @@ int A() {
         case DEFAULT:
             return 1;
         default :
-            return 0;
+            return 1;
     }
 }
+
+void Parentesis() {
+    int NP1 = 0;
+     int NP2 = 0;
+    if(preanalisis == '('){
+        parea('(');
+        Parentesis();
+        parea(')');
+    }else if(preanalisis == ')'){
+    }else{
+      printf("Hay un error en los parentesis\n");
+    }
+}
+
 int Flujo() {
     int NP1 = 0;
     int NP2 = 0;
@@ -114,10 +147,10 @@ int Else() {
         NP1 = Interior();
         return (NP1 -1);
     } else{
-        return 0;
+        return 1;
     }
 }
- 
+
  int While() {
      int NP1 = 0;
      int NP2 = 0;
@@ -212,7 +245,7 @@ int C() {
             return 1;
         default :
             return 0;
-      }   
+      }
  }
 
  int Cases() {
@@ -230,9 +263,9 @@ int C() {
         NP2 = Cases();
         return ( NP1 + NP2 );
     } else if (preanalisis == '}'){
-        return 0;
+        return 1;
     } else {
-        return 0;
+        return 1; 
     }
 }
 int Interior() {
@@ -263,7 +296,7 @@ int Interior() {
             return 1;
         default :
             return 1;
-    } 
+    }
 }
 
 int main(int argc, char **argv) {
@@ -276,10 +309,7 @@ int main(int argc, char **argv) {
 
     preanalisis = yylex();
     int NPath = S();
-    printf ( "NPATH = %d", NPath);
+    printf ( "NPATH = %d\n", NPath);
     return 0;
 
 }
-
-
-
