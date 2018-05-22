@@ -1,0 +1,161 @@
+S             FIRST(FIRST(Tipo))                                            FOLLOW($)
+Tipo          FIRST(FIRST(TipoSimple),FIRST(TipoComp),void)                 FOLLOW(id)
+TipoSimple    FIRST(int,boolean,byte,float,char,double,long,short)          FOLLOW()
+TipoComp      FIRST(signed,unsigned)                                        FOLLOW()
+Args          FIRST(FIRST(Arg))                                             FOLLOW()
+A             FIRST(FIRST(Exp),FIRST(Flujo),ε)                              FOLLOW()
+Arg           FIRST(FIRST(Tipo),id,ε)                                       FOLLOW()
+Exp           FIRST(FIRST(Asig),FIRST(Func),FIRST(Return),break)            FOLLOW()
+Asig          FIRST(FIRST(Tipo))                                            FOLLOW()
+Func          FIRST(id,FIRST(Op))                                           FOLLOW()
+Op            FIRST(id,(,num)                                               FOLLOW()
+Op2           FIRST(+,-,*,/,%,ε)                                            FOLLOW()
+Flujo         FIRST(FIRST(If),FIRST(While),do,FIRST(For),FIRST(Switch))     FOLLOW()
+If            FIRST(if)                                                     FOLLOW()
+Else          FIRST(else)                                                   FOLLOW()
+While         FIRST(while)                                                  FOLLOW()
+For           FIRST(for)                                                    FOLLOW()
+Switch        FIRST(switch)                                                 FOLLOW()
+Return        FIRST(return)                                                 FOLLOW()
+C             FIRST((,id,num,FIRST(Boolean))                                FOLLOW()
+C2            FIRST(FIRST(Comp),ε)                                          FOLLOW()
+Comp          FIRST(>,<,>=,<=,==,!=,||,|,&&,&)                              FOLLOW()
+Boolean       FIRST(true,false)                                             FOLLOW()
+Ids           FIRST(id,ε)                                                   FOLLOW()
+Cases         FIRST(case)                                                   FOLLOW()
+
+
+
+
+SIGUIENTES
+
+S	$
+Tipo	id, ε
+TipoSimple	id, ε
+TipoComp	id, ε
+Args	)
+A	case, }
+Arg	id, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, )
+Exp	;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num, do, if, for, while, switch, else, case, }
+Asig	;
+Func	), ;
+Op	+, -, *, /, %, ), ;
+Op2	+, -, *, /, %, ), ;
+Flujo	;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num, do, if, for, while, switch, case, }
+If	else, ;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num, do, if, for, while, switch, case, }
+Else	;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num, do, if, for, while, switch, case, }
+While	;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num, do, if, for, while, switch, case, }
+For	;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num, do, if, for, while, switch, case, }
+Switch	;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num, do, if, for, while, switch, case, }
+Return	;
+C	>, <, >=, <=, ==, !=, &&, &, (, id, num, true, false, ), ;
+C2	>, <, >=, <=, ==, !=, &&, &, (, id, num, true, false, ), ;
+Comp	(, id, num, true, false
+Boolean	>, <, >=, <=, ==, !=, &&, &, (, id, num, true, false, ), ;
+Ids	;
+Cases	default, }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PREDICCIONES
+
+#	Expression	Predict
+1	S → Tipo id ( Args ) { A }	void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+2	Tipo → TipoSimple	int, boolean, byte, float, char, double, long, short
+3	Tipo → TipoComp	signed, unsigned
+4	Tipo → void	void
+5	TipoSimple → int	int
+6	TipoSimple → boolean	boolean
+7	TipoSimple → byte	byte
+8	TipoSimple → float	float
+9	TipoSimple → char	char
+10	TipoSimple → double	double
+11	TipoSimple → long	long
+12	TipoSimple → short	short
+13	TipoComp → signed TipoSimple	signed
+14	TipoComp → unsigned TipoSimple	unsigned
+15	Args → Arg	id, void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+16	Args → Arg Args	id, void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+17	A → Exp A	;, break, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, return, id, (, num
+18	A → Flujo A	do, if, for, while, switch
+19	A → ε	case, }
+20	Arg → Tipo id	void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+21	Arg → Tipo id ,	void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+22	Arg → id ,	id
+23	Arg → id	id
+24	Arg → ε	id, void, int, boolean, byte, float, char, double, long, short, signed, unsigned, )
+25	Exp → Asig ;	void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+26	Exp → Func ;	id, (, num
+27	Exp → Return ;	return, ;
+28	Exp → break ;	break
+29	Asig → Tipo id = Func ;	void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+30	Asig → Tipo Ids ;	void, int, boolean, byte, float, char, double, long, short, signed, unsigned
+31	Func → id ( Args ) ;	id
+32	Func → Op	(, id, num
+33	Op → ( Op ) Op2	(
+34	Op → id Op2	id
+35	Op → num Op2	num
+36	Op2 → + Op Op2	+
+37	Op2 → - Op Op2	-
+38	Op2 → * Op Op2	*
+39	Op2 → / Op Op2	/
+40	Op2 → % Op Op2	%
+41	Op2 → ε	+, -, *, /, %, ), ;
+42	Flujo → If	if
+43	Flujo → If Else	if
+44	Flujo → While	while
+45	Flujo → do { A } while ( C ) ;	do
+46	Flujo → For	for
+47	Flujo → Switch	switch
+48	If → if ( C ) { A }	if
+49	If → if ( C ) Exp	if
+50	Else → else { A }	else
+51	Else → else Exp	else
+52	While → while ( C ) { A }	while
+53	While → while ( C ) Exp	while
+54	For → for ( Asig ; C ; Func ) { A }	for
+55	For → for ( Asig ; C ; Func ) Exp	for
+56	Switch → switch ( Func ) { Cases default : A }	switch
+57	Switch → switch ( Func ) { Cases }	switch
+58	Return → return ( Func )	return
+59	Return → return Id	return
+60	C → ( C ) C2	(
+61	C → id C2	id
+62	C → num C2	num
+63	C → Boolean C2	true, false
+64	C2 → Comp C C2	>, <, >=, <=, ==, !=, &&, &, (, id, num, true, false
+65	C2 → ε	>, <, >=, <=, ==, !=, &&, &, (, id, num, true, false, ), ;
+66	Comp → >	>
+67	Comp → <	<
+68	Comp → >=	>=
+69	Comp → <=	<=
+70	Comp → ==	==
+71	Comp → !=	!=
+72	Comp → &&	&&
+73	Comp → &	&
+74	Boolean → true	true
+75	Boolean → false	false
+76	Ids → id	id
+77	Ids → id , Ids	id
+78	Ids → ε	ε
+79	Cases → case id : A Cases	case
+80	Cases → case num : A Cases	case

@@ -1,0 +1,119 @@
+S -> Tipo id ( ArgsDef ) { A }        
+
+Tipo -> TipoSimple | TipoComp | void | struct id
+
+TipoSimple ->   int | boolean | byte | float | char | double | long AuxLong | short | const | volatile
+
+AuxLong -> double
+           | ε
+
+TipoComp -> signed TipoSimple
+         | unsigned TipoSimple
+
+A -> Exp A      
+    | Flujo A   
+    | ε         
+
+ArgsDef -> ArgDef ArgsDef
+        | , ArgsDef
+        | ε
+
+ArgDef -> Tipo id
+          | id
+
+Exp -> Asig ;              
+        | Op ;            
+        | Return ;        
+        | break ;         
+
+Asig -> Tipo Ids AsigValor        
+
+AsigValor -> = Op AsigValor
+        | , id AsigValor
+        | ε
+
+ArgsLla -> Valor ArgsLla
+           | , ArgsLla
+           | ε
+
+Valor -> id
+          | num
+          | String
+
+String -> " String2 "
+         | ' String2 '
+
+String2 -> id String2
+          | ε
+
+Op ->  ( Op ) Op2
+     | id AuxOP
+     | num Op2
+
+AuxOP -> ( ArgsLla ) Op2
+        | Op2
+        | ++
+        | --
+        | [ Valor ]
+
+Op2 -> + Op Op2
+      | - Op Op2
+      | * Op Op2
+      | / Op Op2
+      | % Op Op2
+      | ε
+
+Flujo -> If Else               
+        | While                 
+        | do { A } while ( C ) ;       
+        | For                   
+        | Switch               
+
+If -> if ( C ) Interior         
+
+Else -> else Interior             
+        | ε                        
+
+While -> while ( C ) Interior      
+
+For -> for ( Asig ; C ; Op ) Interior    
+
+Switch ->  switch ( Op ) { Cases }                  
+
+Return -> return Return2                  
+
+Return2 -> ( Op )
+           | Valor
+
+C -> ( C ) C2      
+    | id C2        
+    | num C2       
+    | Boolean C2   
+
+C2 -> Comp C C2       
+      | ε             
+
+Comp ->   >   
+        | <    
+        | >=   
+        | <=   
+        | ==   
+        | !=   
+        | &&   
+        | ||   
+        | &    
+        | |    
+
+Boolean -> true       
+          | false   
+
+Ids -> id Ids
+    | , Ids
+    | ε
+
+Cases -> case Valor : A Cases          
+        | default : A Cases             
+        | ε                             
+
+Interior -> { A }               
+        | Exp       

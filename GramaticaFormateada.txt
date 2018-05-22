@@ -1,0 +1,12 @@
+S -> { A }
+A -> Flujo A | EPSILON
+Flujo -> If Else | While | do { A } while ( C ) | For | Switch                           
+If -> if ( C ) Interior
+Else -> else Interior    
+While -> while ( C ) Interior
+For -> for ( C ) Interior   
+Switch ->  switch ( ) { Cases }     
+C -> ( C ) C | Comp C | EPSILON  
+Comp ->  && | || | & | |    
+Cases -> case A Cases | default A Cases | EPSILON                         
+Interior -> { A } | EPSILON      

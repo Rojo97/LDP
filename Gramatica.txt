@@ -1,0 +1,38 @@
+S -> { A }             NPATH = A.NP
+
+A -> Flujo A   A.NP = Flujo.NP * A.NP
+    | ( A ) A   A.NP = A.NP 
+    | ε         A.NP = 1
+
+Flujo -> If Else                Flujo.NP = If.NP + Else.NP
+        | While                 Flujo.NP = While.NP
+        | do { A } while ( C )  Flujo.NP =  A.NP + C.NP + 1
+        | For                   Flujo.NP = For.NP
+        | Switch                Flujo.NP = Switch.NP
+
+If -> if ( C ) Interior         If.NP = C.NP + Interior.NP + 1
+
+Else -> else Interior              Else.NP = Interior.NP -1
+        | ε                        Else.NP = 0
+
+While -> while ( C ) Interior      While.NP = C.NP + Interior.NP + 1
+
+For -> for ( C ) Interior    For.NP = C.NP + Interior.NP + 1
+
+Switch ->  switch ( C ) { Cases }        Switch.NP = C.NP + Cases.NP
+
+C ->( C ) C      C.NP = C.NP + C.NP
+    | Comp C     C.NP = Comp.NP + C.NP
+    | ε          C.NP = 0
+
+Comp ->  &&   Comp.NP = 1
+        | ||   Comp.NP = 1
+        | &    Comp.NP = 1
+        | |    Comp.NP = 1
+
+Cases -> case A Cases          Cases.NP = A.NP + Cases.NP
+        | default A Cases            Cases.NP = A.NP + Cases.NP
+        | ε                            Cases.NP = 0
+
+Interior -> { A }               Interior.NP = A.NP
+        | ε                 Interior.NP = 1

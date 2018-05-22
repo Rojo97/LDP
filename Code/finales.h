@@ -1,0 +1,12 @@
+#define IF 257
+#define DO 258
+#define WHILE 259
+#define ELSE 260
+#define FOR 261
+#define SWITCH 262
+#define AND 263
+#define OR 264
+#define CASE 265
+#define ANDBIT 266
+#define ORBIT 267
+#define DEFAULT 268
