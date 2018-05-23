@@ -1,4 +1,6 @@
-M → (){C}               M.p := C.p
+P → M P
+    | EPSILON
+M → (){C}               M.p := C.p          guardar id
 C → SC                  C.p := S.p * C.p
     | ε                 C.p := 1
 S → {C}                 S.p := C.p
