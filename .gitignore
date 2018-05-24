@@ -1,2 +1,8 @@
 Code/lex.yy.c
 Code/a.out
+Code/.antlr/*
+Practica3/.antlr/*
+Practica3/*.java
+Practica3/*.class
+Practica3/*.tokens
+Practica3/*.interp
