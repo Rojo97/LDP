@@ -1,13 +1,13 @@
 grammar practica3c;
 
 //Imports del parser
-@header{
+@parser::header{
 import java.util.ArrayList;
 import java.io.FileWriter;
 }
 
 //Variables y metodos
-@members{
+@parser::members{
     String ultimoID="";
     int NpathAux = 0;
     ArrayList<String> funciones = new ArrayList<String>();
