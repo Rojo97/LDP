@@ -34,9 +34,9 @@ int partition (int arr[], int low, int high)
 }
  
 /* The main function that implements QuickSort
- arr[] --> Array to be sorted,
-  low  --> Starting index,
-  high  --> Ending index */
+ arr[] -- Array to be sorted,
+  low  -- Starting index,
+  high  -- Ending index */
 void quickSort(int arr[], int low, int high)
 {
     if (low < high)

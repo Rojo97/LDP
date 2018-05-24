@@ -26,29 +26,33 @@ p @after{
 
 }: p1 |;
 
-p1: m
+p1:  m
     | d
     | dp;
 
-m: '(' ')' '{' c '}' p1
+m: ids '(' args ')' '{' c '}' p1 
     |;
 
-d: '(' ')' ';' p1
+d: ids '(' args ')' ';' p1
     |;
 
-dp: ';' p1
+dp: ids ';' p1
     |;
 
 c: s c 
     |;
 
-s: '{' c '}'
-    | e ';'
-    | WHILE '(' c ')' s
-    | IF '(' c ')' s r
+s: ids '{' c '}'
+    | l';'
+    | WHILE '(' e ')' s
+    | IF '(' e ')' s r
     | FOR '(' e ';' e ';' e ')' s
     | SWITCH '(' e ')' '{' b '}'
-    | DO '{' c '}' WHILE '(' e ')';
+    | DO s WHILE '(' e ')';
+
+l: ids '(' args ')' l
+    | ids 
+    |;
 
 b: CASE c b
     | CASE c
@@ -58,7 +62,8 @@ r: ELSE s
     |;
 
 e: f e1
-    | e1;
+    | e1
+    | l ;
 
 e1: '?' e e
     |;
@@ -71,6 +76,14 @@ f1: f
 
 u: '(' e ')' e;
 
+ids: ID ids
+    |;
+
+args: ID args
+    | '(' ')' args
+    | '(' args ')'
+    |;
+
 WHILE: 'while';
 IF: 'if';
 FOR: 'for';
@@ -81,10 +94,12 @@ DEFAULT: 'default';
 ELSE: 'else';
 OPERANDO:  '||'
         | '&&';
-BlockComment:   '/*' .*? '*/' -> skip;
+INCLUDE: 'include' -> skip;
+BlockComment2: '/*' .*? '*/' -> skip;
 LineComment:   '//' ~[\r\n]* -> skip;
 WS	: [ \t\r\n]+ -> skip;
 STRING1: '"' .*? '"' -> skip;
 STRING2: ['] .*? ['] -> skip;
-ID:	[a-zA-Z][a-zA-Z0-9_]+ {llamada = getText(); System.out.println(llamada);} -> skip;
+STRINGINCLUDE: '<' .*? '>'-> skip;
+ID:	[a-zA-Z][a-zA-Z0-9_]+ {ultimoID = getText();} -> skip;
 ErrorCharacter : . -> channel(HIDDEN) ;
