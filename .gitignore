@@ -1,9 +1,10 @@
 Code/lex.yy.c
 Code/a.out
 Code/.antlr/*
-Practica3/.antlr/*
-Practica3/*.java
-Practica3/*.class
-Practica3/*.tokens
-Practica3/*.interp
-Practica3/llamadas.txt
+Practica3c/.antlr/*
+Practica3c/*.java
+Practica3c/*.class
+Practica3c/*.tokens
+Practica3c/*.interp
+Practica3c/llamadas.txt
+Practica3c/añoPasado/.antlr

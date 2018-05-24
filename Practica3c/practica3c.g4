@@ -8,75 +8,89 @@ import java.io.FileWriter;
 
 //Variables y metodos
 @members{
-    String metodo = "", llamada = "", ultimoID="";
+    String ultimoID="";
+    int NpathAux = 0;
     ArrayList<String> funciones = new ArrayList<String>();
-    ArrayList<Integer> npath = new ArrayList<Integer>();
+    ArrayList<Integer> npaths = new ArrayList<Integer>();
     ArrayList<String> llamadas = new ArrayList<String>();
-    ArrayList<ArrayList<String>> esquemaLLamadas = new ArrayList<ArrayList<String>>();
+    ArrayList<ArrayList<String>> esquemaLlamadas = new ArrayList<ArrayList<String>>();
 }
 
 p @after{
     FileWriter salida = null;
     try {
         salida = new FileWriter("llamadas.txt");
-        //Almacenar datos
+        for(int i=0;i<funciones.size();i++){
+		    salida.write(funciones.get(i) + " Npath = "+ npaths.get(i) + "\n");
+		    System.out.println(funciones.get(i) + " Npath = "+ npaths.get(i));
+		for(int j=0;j<esquemaLlamadas.get(i).size();j++){
+			//if(funciones.contains(esquemaLlamadas.get(i).get(j))){
+				salida.write("\t" + esquemaLlamadas.get(i).get(j) + "\n");
+				System.out.println("\t"+esquemaLlamadas.get(i).get(j));
+			//}
+		}
+        }
         salida.close();
     } catch (Exception ex) {
-    }
+        System.out.println("Error en la escritura de fichero");
+    } 
+}: programa |;
 
-}: p1 |;
+programa:  metodo
+    | definicion;
 
-p1:  m
-    | d
-    | dp;
-
-m: ids '(' args ')' '{' c '}' p1 
+metodo: ids {funciones.add(ultimoID);} '(' args ')' '{' contenido {npaths.add($contenido.npath);} '}' {esquemaLlamadas.add(llamadas); llamadas = new ArrayList<String>();}  programa 
     |;
 
-d: ids '(' args ')' ';' p1
+definicion: ids '(' args ')' ';' programa
+    |ids ';' programa
     |;
 
-dp: ids ';' p1
-    |;
+contenido returns [int npath]: sentencia {$npath = $sentencia.npath;} contenido {$npath = $npath * $contenido.npath;}
+    | {$npath = 1;} ;  
 
-c: s c 
-    |;
+sentencia returns [int npath]:'{' contenido {$npath = $contenido.npath;} '}'
+    | llamadaMetodo ';' {$npath = 1;}
+    | ids ';' {$npath = 1;}
+    | retur ';' {$npath = 1;}
+    | expresion {if ($expresion.npath == 0) $npath = 1; else $npath = $expresion.npath;} ';'
+    | WHILE '(' expresion {$npath = $expresion.npath;} ')' sentencia {$npath = $npath + $sentencia.npath + 1;}
+    | IF '(' expresion {$npath = $expresion.npath;}')' sentencia {$npath = $npath + $sentencia.npath;} els {$npath = $npath + $els.npath;}
+    | FOR '(' expresion {$npath = $expresion.npath;} ';' expresion {$npath = $npath + $expresion.npath;} ';' expresion {$npath = $npath + $expresion.npath;} ')' sentencia {$npath = $npath + $sentencia.npath +1;}
+    | SWITCH '(' expresion {$npath = $expresion.npath;} ')' '{' casos {$npath = $npath + $casos.npath;} '}'
+    | DO sentencia {$npath = $sentencia.npath;} WHILE '(' expresion {$npath = $npath + $expresion.npath + 1;} ')';
 
-s: ids '{' c '}'
-    | l';'
-    | WHILE '(' e ')' s
-    | IF '(' e ')' s r
-    | FOR '(' e ';' e ';' e ')' s
-    | SWITCH '(' e ')' '{' b '}'
-    | DO s WHILE '(' e ')';
+retur: 'return' expresion;
 
-l: ids '(' args ')' l
-    | ids 
-    |;
+llamadaMetodo: ids {llamadas.add(ultimoID);} '(' args ')' expresion
+    |ids;
 
-b: CASE c b
-    | CASE c
-    | DEFAULT c;
+casos returns [int npath]: CASE expresion':' contenido {$npath = $contenido.npath;} casos {$npath = $npath + $casos.npath;}
+    | DEFAULT expresion ':' contenido {$npath = $contenido.npath;}
+    | CASE expresion ':' contenido {$npath = $contenido.npath;};
 
-r: ELSE s
-    |;
+els returns [int npath]: ELSE sentencia {$npath = $sentencia.npath;}
+    | {$npath = 1;};
 
-e: l f e1
-    | l
-    |;
+expresion returns [int npath]: llamadaMetodo operando {$npath = $operando.npath;} eaux {$npath = $npath + $eaux.npath;}
+    | llamadaMetodo {$npath = 0;}
+    | {$npath = 0;};
 
-e1: '?' e e
-    |e;
+eaux returns [int npath]: '?' expresion {$npath = $expresion.npath;} expresion {$npath = $npath + $expresion.npath + 2;}
+    |expresion {$npath = $expresion.npath;}
+    |{$npath = 0;};
 
-f: OPERANDO f1
-    | u;
+operando returns [int npath]: OPERANDO operandoAux {$npath = $operandoAux.npath + 1;}
+    | expPar {$npath = $expPar.npath;};
 
-f1: l f
-    |;
+operandoAux returns [int npath]: expresion {$npath = $expresion.npath;} operando {$npath = $operando.npath;}
+    | '{' expresion {$npath = $expresion.npath;} '}' expresion {$npath = $npath + $expresion.npath;}
+    |{$npath = 0;};
 
-u: '(' e ')' e;
+expPar returns [int npath]: '(' expresion {$npath = $expresion.npath;} ')' expresion {$npath = $npath + $expresion.npath;}
+    | '{' expresion {$npath = $expresion.npath;} '}' expresion {$npath = $npath + $expresion.npath;};
 
-ids: ID ids
+ids: ID {ultimoID = $ID.text;} ids
     |;
 
 args: ID args
@@ -100,5 +114,5 @@ LineComment:   '//' ~[\r\n]* -> skip;
 WS	: [ \t\r\n]+ -> skip;
 STRING1: '"' .*? '"' -> skip;
 STRING2: ['] .*? ['] -> skip;
-ID:	[a-zA-Z][a-zA-Z0-9_]+;
+ID:	[a-zA-Z][a-zA-Z0-9_]*;
 ErrorCharacter : . -> channel(HIDDEN) ;
