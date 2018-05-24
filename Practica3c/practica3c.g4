@@ -61,17 +61,17 @@ b: CASE c b
 r: ELSE s
     |;
 
-e: f e1
-    | e1
-    | l ;
+e: l f e1
+    | l
+    |;
 
 e1: '?' e e
-    |;
+    |e;
 
 f: OPERANDO f1
     | u;
 
-f1: f
+f1: l f
     |;
 
 u: '(' e ')' e;
@@ -92,14 +92,13 @@ DO: 'do';
 CASE: 'case';
 DEFAULT: 'default';
 ELSE: 'else';
-OPERANDO:  '||'
-        | '&&';
+OPERANDO:  '&&'
+        | '||';
 INCLUDE: 'include' -> skip;
 BlockComment2: '/*' .*? '*/' -> skip;
 LineComment:   '//' ~[\r\n]* -> skip;
 WS	: [ \t\r\n]+ -> skip;
 STRING1: '"' .*? '"' -> skip;
 STRING2: ['] .*? ['] -> skip;
-STRINGINCLUDE: '<' .*? '>'-> skip;
-ID:	[a-zA-Z][a-zA-Z0-9_]+ {ultimoID = getText();} -> skip;
+ID:	[a-zA-Z][a-zA-Z0-9_]+;
 ErrorCharacter : . -> channel(HIDDEN) ;
