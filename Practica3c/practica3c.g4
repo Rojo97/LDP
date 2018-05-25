@@ -24,10 +24,10 @@ p @after{
 		    salida.write(funciones.get(i) + " Npath = "+ npaths.get(i) + "\n");
 		    System.out.println(funciones.get(i) + " Npath = "+ npaths.get(i));
 		for(int j=0;j<esquemaLlamadas.get(i).size();j++){
-			//if(funciones.contains(esquemaLlamadas.get(i).get(j))){
+			if(funciones.contains(esquemaLlamadas.get(i).get(j))){
 				salida.write("\t" + esquemaLlamadas.get(i).get(j) + "\n");
 				System.out.println("\t"+esquemaLlamadas.get(i).get(j));
-			//}
+			}
 		}
         }
         salida.close();
