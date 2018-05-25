@@ -8,3 +8,7 @@ Practica3c/*.tokens
 Practica3c/*.interp
 Practica3c/llamadas.txt
 Practica3c/añoPasado/.antlr
+Practica3c/añoPasado/*.class
+Practica3c/añoPasado/*.java
+Practica3c/añoPasado/*.tokens
+Practica3c/añoPasado/*.interp

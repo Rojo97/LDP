@@ -9,7 +9,7 @@ import java.io.FileWriter;
 //Variables y metodos
 @parser::members{
     String ultimoID="";
-    int NpathAux = 0;
+
     ArrayList<String> funciones = new ArrayList<String>();
     ArrayList<Integer> npaths = new ArrayList<Integer>();
     ArrayList<String> llamadas = new ArrayList<String>();
@@ -46,33 +46,33 @@ definicion: ids '(' args ')' ';' programa
     |ids ';' programa
     |;
 
-contenido returns [int npath]: sentencia {$npath = $sentencia.npath;} contenido {$npath = $npath * $contenido.npath;}
+contenido returns [int npath]: sentencia contenido {$npath = $sentencia.npath * $contenido.npath;}
     | {$npath = 1;} ;  
 
-sentencia returns [int npath]:'{' contenido {$npath = $contenido.npath;} '}'
+sentencia returns [int npath]:'{' contenido '}' {$npath = $contenido.npath;}
     | llamadaMetodo ';' {$npath = 1;}
     | ids ';' {$npath = 1;}
     | retur ';' {$npath = 1;}
-    | expresion {if ($expresion.npath == 0) $npath = 1; else $npath = $expresion.npath;} ';'
-    | WHILE '(' expresion {$npath = $expresion.npath;} ')' sentencia {$npath = $npath + $sentencia.npath + 1;}
-    | IF '(' expresion {$npath = $expresion.npath;}')' sentencia {$npath = $npath + $sentencia.npath;} els {$npath = $npath + $els.npath;}
+    | expresion ';' {if ($expresion.npath == 0) $npath = 1; else $npath = $expresion.npath;}
+    | WHILE '(' expresion ')' sentencia {$npath = $expresion.npath + $sentencia.npath + 1;}
+    | IF '(' expresion ')' sentencia els {$npath = $expresion.npath + $sentencia.npath + $els.npath;}
     | FOR '(' expresion {$npath = $expresion.npath;} ';' expresion {$npath = $npath + $expresion.npath;} ';' expresion {$npath = $npath + $expresion.npath;} ')' sentencia {$npath = $npath + $sentencia.npath +1;}
-    | SWITCH '(' expresion {$npath = $expresion.npath;} ')' '{' casos {$npath = $npath + $casos.npath;} '}'
-    | DO sentencia {$npath = $sentencia.npath;} WHILE '(' expresion {$npath = $npath + $expresion.npath + 1;} ')';
+    | SWITCH '(' expresion ')' '{' casos {$npath = $expresion.npath + $casos.npath;} '}'
+    | DO sentencia WHILE '(' expresion ')' {$npath = $sentencia.npath + $expresion.npath + 1;};
 
 retur: 'return' expresion;
 
 llamadaMetodo: ids {llamadas.add(ultimoID);} '(' args ')' expresion
-    |ids;
+   |ids;
 
-casos returns [int npath]: CASE expresion':' contenido {$npath = $contenido.npath;} casos {$npath = $npath + $casos.npath;}
+casos returns [int npath]: CASE expresion':' contenido casos {$npath = $contenido.npath + $casos.npath;}
     | DEFAULT expresion ':' contenido {$npath = $contenido.npath;}
     | CASE expresion ':' contenido {$npath = $contenido.npath;};
 
 els returns [int npath]: ELSE sentencia {$npath = $sentencia.npath;}
     | {$npath = 1;};
 
-expresion returns [int npath]: llamadaMetodo operando {$npath = $operando.npath;} eaux {$npath = $npath + $eaux.npath;}
+expresion returns [int npath]: llamadaMetodo operando eaux {$npath = $operando.npath + $eaux.npath;}
     | llamadaMetodo {$npath = 0;}
     | {$npath = 0;};
 
@@ -83,7 +83,7 @@ eaux returns [int npath]: '?' expresion {$npath = $expresion.npath;} expresion {
 operando returns [int npath]: OPERANDO operandoAux {$npath = $operandoAux.npath + 1;}
     | expPar {$npath = $expPar.npath;};
 
-operandoAux returns [int npath]: expresion {$npath = $expresion.npath;} operando {$npath = $operando.npath;}
+operandoAux returns [int npath]: expresion operando {$npath = $expresion.npath + $operando.npath;}
     | '{' expresion {$npath = $expresion.npath;} '}' expresion {$npath = $npath + $expresion.npath;}
     |{$npath = 0;};
 
@@ -108,7 +108,6 @@ DEFAULT: 'default';
 ELSE: 'else';
 OPERANDO:  '&&'
         | '||';
-INCLUDE: 'include' -> skip;
 BlockComment2: '/*' .*? '*/' -> skip;
 LineComment:   '//' ~[\r\n]* -> skip;
 WS	: [ \t\r\n]+ -> skip;

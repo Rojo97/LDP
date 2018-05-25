@@ -12,9 +12,12 @@ int partition (int arr[], int low, int high)
             i++;    // increment index of smaller element
             swap(&arr[i], &arr[j]);
             int a = partition(pivot,1,2);
+            int var1,var2,var3;
+            var1 = (var1 + (var2 + (var3) * var1));
         }
     }
     swap(&arr[i + 1], &arr[high]);
+    test(test2());
     return (i + 1);
 }
 /* The main function that implements QuickSort
