@@ -1,0 +1,26 @@
+P → M P
+    | EPSILON
+M → (){C}               M.p := C.p          guardar id
+C → SC                  C.p := S.p * C.p
+    | ε                 C.p := 1
+S → {C}                 S.p := C.p
+    | E;                S.p := if E.p = 0 then 1 else E.p
+    | w(E)S             S.p := E.p + S.p + 1
+    | i(E)SR            S.p := E.p + S.p + R.p
+    | f(E; E; E)S       S.p := E.p + E.p + E.p + S.p +1
+    | s(E){B}           S.p := E.p + B.p
+    | dSw(E);           S.p := S.p + E.p + 1
+B → c : CB              B.p := C.p + B.p
+    | c : C             B.p := C.p
+    | t : C             B.p := C.p
+R → eS                  R.p := S.p
+    | ε                 R.p := 1
+E → F E′                E.p := F.p + E'.p
+    | E′                E.p := E'.p
+E′ → ?E : E             E'.p := E.p + E.p + 2
+    | ε                 E'.p := 0
+F → oF′                 F.p := F'.p
+    | U                 F.p := U.p
+F′ → F                  F'.p := F.p
+    | ε                 F'.p := 0
+U → (E)E                U.p := E.p + E.p
