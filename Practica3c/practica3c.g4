@@ -62,7 +62,7 @@ sentencia returns [int npath]:'{' contenido '}' {$npath = $contenido.npath;}
 
 retur: 'return' expresion;
 
-llamadaMetodo: ids {llamadas.add(ultimoID);} '(' args ')' expresion
+llamadaMetodo: ids {llamadas.add(ultimoID);} '(' args ')'
    |ids;
 
 casos returns [int npath]: CASE expresion':' contenido casos {$npath = $contenido.npath + $casos.npath;}
@@ -77,14 +77,12 @@ expresion returns [int npath]: llamadaMetodo operando eaux {$npath = $operando.n
     | {$npath = 0;};
 
 eaux returns [int npath]: '?' expresion {$npath = $expresion.npath;} expresion {$npath = $npath + $expresion.npath + 2;}
-    |expresion {$npath = $expresion.npath;}
     |{$npath = 0;};
 
 operando returns [int npath]: OPERANDO operandoAux {$npath = $operandoAux.npath + 1;}
     | expPar {$npath = $expPar.npath;};
 
 operandoAux returns [int npath]: expresion operando {$npath = $expresion.npath + $operando.npath;}
-    | '{' expresion {$npath = $expresion.npath;} '}' expresion {$npath = $npath + $expresion.npath;}
     |{$npath = 0;};
 
 expPar returns [int npath]: '(' expresion {$npath = $expresion.npath;} ')' expresion {$npath = $npath + $expresion.npath;}
@@ -94,9 +92,7 @@ ids: ID {ultimoID = $ID.text;} ids
     |;
 
 args: ID args
-    | '(' ')' args
-    | '(' args ')'
-    |;
+    |expresion;
 
 WHILE: 'while';
 IF: 'if';

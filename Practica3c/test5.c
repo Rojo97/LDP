@@ -1,7 +1,7 @@
 int partition (int arr[], int low, int high)
 {
     int pivot = arr[high];    // pivot
-    int i = (low - 1);  // Index of smaller element
+    int i=  (low - 1);  // Index of smaller element
  
     for (int j = low; j <= high- 1 && high >1; j++)
     {
